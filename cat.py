@@ -16,7 +16,7 @@ credentials = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope
 client = gspread.authorize(credentials)
 
 # Open Google Sheet
-sheet = client.open("Cat_Data").sheet1  # Your sheet name
+sheet = client.open("cat").sheet1  # Your sheet name
 data = sheet.get_all_records()
 
 # Convert to DataFrame
