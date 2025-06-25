@@ -2,27 +2,32 @@ import streamlit as st
 import pandas as pd
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+import json
 
-# Set up Streamlit
 st.title("🐱 Cat Database Viewer")
-st.markdown("View and explore data of cats from a connected Google Sheet.")
+st.markdown("Explore cat data from Google Sheets")
 
 # Google Sheets authentication
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-credentials = ServiceAccountCredentials.from_json_keyfile_name("google_sheet_keys_aisyah.json", scope)
+
+# Load credentials from Streamlit secrets
+creds_dict = st.secrets["gcp_service_account"]
+credentials = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
 client = gspread.authorize(credentials)
 
-# Open your Google Sheet
-sheet = client.open("cat").sheet1  # Replace with your sheet name
+# Open Google Sheet
+sheet = client.open("Cat_Data").sheet1  # Your sheet name
 data = sheet.get_all_records()
 
 # Convert to DataFrame
 df = pd.DataFrame(data)
 
-# Show DataFrame in Streamlit
+# Display
 st.dataframe(df)
 
-# Optional filtering
+# Optional filter
 if st.checkbox("Filter by breed"):
     breed = st.selectbox("Choose a breed", df['Breed'].unique())
     st.write(df[df['Breed'] == breed])
+
+
